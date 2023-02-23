@@ -2,4 +2,6 @@
 collection of university's homeworks.
 
 ## Lists:
-- [simple sum of two numbers (string & integer)](CS/sum/)
+- [sum of two numbers (string & integer)](CS/sum/)
+- [array iterator by column](CPP/ArrayColumnIterator/)
+- [determinant calculator](CPP/Determinant/)
