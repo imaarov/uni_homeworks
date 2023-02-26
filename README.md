@@ -3,5 +3,7 @@ collection of university's homeworks.
 
 ## Lists:
 - [sum of two numbers (string & integer)](CS/sum/)
-- [array iterator by column](CPP/ArrayColumnIterator/)
+- [Duplicate by column c++ Way](CPP/ArrayColumnIterator/)
 - [determinant calculator](CPP/Determinant/)
+- [determinant calculator C# Way](CS/Determinant)
+- [duplicate by column cpp](CS/Duplicate)
