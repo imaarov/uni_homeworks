@@ -6,4 +6,4 @@ collection of university's homeworks.
 - [Duplicate by column c++ Way](CPP/ArrayColumnIterator/)
 - [determinant calculator](CPP/Determinant/)
 - [determinant calculator C# Way](CS/Determinant)
-- [duplicate by column cpp](CS/Duplicate)
+- [duplicate by column C# Way](CS/Duplicate)
