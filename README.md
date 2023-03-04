@@ -1,7 +1,7 @@
 # uni_homeworks
 collection of university's homeworks.
 
-## Lists:
+## List:
 - [sum of two numbers (string & integer) (جمع دو عدد رشته ای و عددی)](CS/sum/)
 - [Duplicate by column c++ Way (گرفتن عدد تکراری با پیمایش ستونی)](CPP/ArrayColumnIterator/)
 - [determinant calculator (دترمینان با cpp)](CPP/Determinant/)
