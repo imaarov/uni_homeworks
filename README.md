@@ -1,5 +1,6 @@
 # uni_homeworks
-collection of university's homeworks.
+Collection of university homework.
+
 
 ## List:
 - [sum of two numbers (string & integer) (جمع دو عدد رشته ای و عددی)](CS/sum/)
