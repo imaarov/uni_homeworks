@@ -9,3 +9,4 @@ Collection of university homework.
 - [determinant calculator C# Way (دترمینان با C#)](CS/Determinant)
 - [duplicate by column C# Way (گرفتن عدد تکراری با پیمایش ستونی با C#)](CS/Duplicate)
 - [box volume calc (محاسبه حجم جعبه c#)](CS/VolBox)
+- [random math test 1 ( 1 محاسبه عبارت ریاضی)](CS/RandomMathTest1)
