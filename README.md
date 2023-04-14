@@ -12,3 +12,4 @@ Collection of university homework.
 - [random math test 1 ( 1 محاسبه عبارت ریاضی)](CS/RandomMathTest1)
 - [random math test 2 ( 2 محاسبه عبارت ریاضی)](CS/RandomMathTest2)
 - [grade calc (محاسبه نمره و وضعیت پاس شدن)](CS/GradeCalc)
+- [idk calc (محاسبه تست ۴)](CS/RandomTest1)
