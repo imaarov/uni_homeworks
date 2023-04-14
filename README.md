@@ -11,3 +11,4 @@ Collection of university homework.
 - [box volume calc (محاسبه حجم جعبه c#)](CS/VolBox)
 - [random math test 1 ( 1 محاسبه عبارت ریاضی)](CS/RandomMathTest1)
 - [random math test 2 ( 2 محاسبه عبارت ریاضی)](CS/RandomMathTest2)
+- [grade calc (محاسبه نمره و وضعیت پاس شدن)](CS/GradeCalc)
