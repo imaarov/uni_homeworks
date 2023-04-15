@@ -7,10 +7,10 @@ namespace App
         static void Main()
         {
             Console.WriteLine("Enter num 1 : ");
-            int num1 = Convert.ToInt32(Console.ReadLine());
+            int num1 = Math.Abs(Convert.ToInt32(Console.ReadLine()));
 
             Console.WriteLine("Enter num 2 : ");
-            int num2 = Convert.ToInt32(Console.ReadLine());
+            int num2 = Math.Abs(Convert.ToInt32(Console.ReadLine()));
 
             int resGCD = calcGCD(num1, num2);   // ب.م.م
             int resLCM = calcLCM(num1, num2);   // ک.م.م
