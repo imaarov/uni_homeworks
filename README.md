@@ -15,3 +15,6 @@ Collection of university homework.
 - [idk calc (محاسبه تست ۴)](CS/RandomTest1)
 - [LCM, GCD calc (محاسبه ب.م.م و ک.م.م)](CS/Lcm)
 - [Matrix filter (میانه گیری ماتریس دو بعدی)](CS/FilterMatrix)
+
+## Projects:
+- [SudokuSolver](Project/SudokuSolver)
