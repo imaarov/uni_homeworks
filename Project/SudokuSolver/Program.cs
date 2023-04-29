@@ -5,15 +5,18 @@ namespace App
     class Project
     {
         public static int SIZE = 9; //? size of sudoku row & col
+        public static int UNASSIGNED = 0;
         static void Main()
         {
             int[,] sudoku = new int[SIZE, SIZE];
             sudoku = sudokuFiller(sudoku);
+            sudoku = solveSudoku(sudoku);
+            printCurrentSudoku(sudoku);
         }
 
         private static int[,] sudokuFiller(int[,] sudoku)
         {
-            int userInpInt = 0;
+            int userInpInt = UNASSIGNED;
             string? userInpStr;
             bool isExists = false;
 
@@ -31,7 +34,7 @@ namespace App
                             userInpStr == "" ||
                             userInpStr == " " ||
                             userInpStr == null){
-                                userInpInt = 0;     //? 0 یعنی اون خونه تو سودوکو خالیه
+                                userInpInt = UNASSIGNED;     //? 0 یعنی اون خونه تو سودوکو خالیه
                             }else{
                                 userInpInt = Convert.ToInt16(userInpStr);
                             }
@@ -40,7 +43,7 @@ namespace App
                             }
                             isExists = checkDuplicateNum(userInpInt, sudoku, i, j);
                             
-                            if (isExists && userInpInt != 0)
+                            if (isExists && userInpInt != UNASSIGNED)
                             {
                                 Console.WriteLine("dont repeat two num in row or col تو سطر یا ستون یه عدد یکسان هست");
                             }else{
@@ -86,6 +89,35 @@ namespace App
             }
 
             return isExists;
+        }
+    
+        private static int[,] solveSudoku(int [,] sudoku)
+        {
+            bool flag = true;
+            for (int i = 0; i < SIZE; i++)
+            {
+                for (int j = 0; j < SIZE; j++)
+                {
+                    if(sudoku[i,j] == UNASSIGNED){
+                        for (int n = 1; n <= SIZE; n++)
+                        {
+                            if(!checkDuplicateNum(n, sudoku, i, j)){
+                                sudoku[i, j] = n;
+                                solveSudoku(sudoku);
+                                if(flag) {
+                                    goto afterBreak;
+                                }
+                            }
+                        }
+                        flag = false;
+                    }
+                }
+            }
+
+            afterBreak:
+                Console.WriteLine("Done");
+
+            return sudoku;
         }
     }
 }
