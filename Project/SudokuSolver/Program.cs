@@ -10,7 +10,8 @@ namespace App
         {
             int[,] sudoku = new int[SIZE, SIZE];
             sudoku = sudokuFiller(sudoku);
-            sudoku = solveSudoku(sudoku);
+            // sudoku = solveSudoku(sudoku);
+            solver(ref sudoku);
             printCurrentSudoku(sudoku);
         }
 
@@ -91,33 +92,58 @@ namespace App
             return isExists;
         }
     
-        private static int[,] solveSudoku(int [,] sudoku)
+        // private static int[,] solveSudoku(int [,] sudoku)
+        // {
+        //     bool flag = true;
+        //     for (int i = 0; i < SIZE; i++)
+        //     {
+        //         for (int j = 0; j < SIZE; j++)
+        //         {
+        //             if(sudoku[i,j] == UNASSIGNED){      //? اگه خونه سودوکو خالی بود
+        //                 for (int n = 1; n <= SIZE; n++)
+        //                 {
+        //                     if(!checkDuplicateNum(n, sudoku, i, j)){    //? اگه این عدده تکراری نبود تو سطر و ستون
+        //                         sudoku[i, j] = n;
+        //                         solveSudoku(sudoku);
+        //                         if(flag) {
+        //                             goto afterBreak;
+        //                         }
+        //                     }
+        //                 }
+        //                 flag = false;   //? اگه کل عدد ها امکان قرار دادنش نیست 
+        //             }
+        //         }
+        //         flag = true;
+        //     }
+
+        //     afterBreak:
+        //         Console.WriteLine("Done");
+
+        //     return sudoku;
+        // }
+
+        private static bool solver(ref int[,] sudoku)
         {
-            bool flag = true;
             for (int i = 0; i < SIZE; i++)
             {
                 for (int j = 0; j < SIZE; j++)
                 {
-                    if(sudoku[i,j] == UNASSIGNED){
+                    if(sudoku[i,j] == UNASSIGNED) {
                         for (int n = 1; n <= SIZE; n++)
                         {
-                            if(!checkDuplicateNum(n, sudoku, i, j)){
+                            if(!checkDuplicateNum(n, sudoku, i, j)) {
                                 sudoku[i, j] = n;
-                                solveSudoku(sudoku);
-                                if(flag) {
-                                    goto afterBreak;
+                                if(solver(ref sudoku)){
+                                    return true;
                                 }
                             }
                         }
-                        flag = false;
+                        return false;
                     }
                 }
             }
+            return true;
 
-            afterBreak:
-                Console.WriteLine("Done");
-
-            return sudoku;
         }
     }
 }
