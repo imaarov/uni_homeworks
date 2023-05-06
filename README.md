@@ -17,4 +17,4 @@ Collection of university homework.
 - [Matrix filter (میانه گیری ماتریس دو بعدی)](CS/FilterMatrix)
 
 ## Projects:
-- [SudokuSolver](Project/SudokuSolver)
+- [SudokuSolver (حل سودوکو با تابع برگشتی)](Project/SudokuSolver)
