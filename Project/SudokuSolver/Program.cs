@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Linq;
 
 namespace App
 {
@@ -6,13 +8,38 @@ namespace App
     {
         public static int SIZE = 9; //? size of sudoku row & col
         public static int UNASSIGNED = 0;
+        public static int RANDOMFILLER = 2;
+        public static int USERFILLER = 1;
+
         static void Main()
         {
             int[,] sudoku = new int[SIZE, SIZE];
-            sudoku = sudokuFiller(sudoku);
+           
+            int opt = 0;
+            
+            Console.WriteLine("Enter the option you want: \n"
+            + "1-Fill sudoku yourself\n"
+            + "2-Fill sudoku random");
+            opt = Convert.ToInt16(Console.ReadLine());
+
+            if(opt == USERFILLER){
+                sudoku = sudokuFiller(sudoku);
+            }else{
+                int diff = 0;
+                Console.WriteLine("Enter Difficulty:");
+                diff = Convert.ToInt16(Console.ReadLine());
+                fillRandSudoku(ref sudoku, diff);
+                Console.WriteLine("The random sudoku :");
+                printCurrentSudoku(sudoku);
+            }
             // sudoku = solveSudoku(sudoku);
             solver(ref sudoku);
+            solver(ref sudoku);
+            Console.WriteLine("Answer : ");
             printCurrentSudoku(sudoku);
+            if(isFullSudoku(sudoku)){
+                System.Console.WriteLine("solved");
+            }
         }
 
         private static int[,] sudokuFiller(int[,] sudoku)
@@ -92,38 +119,52 @@ namespace App
             return isExists;
         }
     
-        // private static int[,] solveSudoku(int [,] sudoku)
-        // {
-        //     bool flag = true;
-        //     for (int i = 0; i < SIZE; i++)
-        //     {
-        //         for (int j = 0; j < SIZE; j++)
-        //         {
-        //             if(sudoku[i,j] == UNASSIGNED){      //? اگه خونه سودوکو خالی بود
-        //                 for (int n = 1; n <= SIZE; n++)
-        //                 {
-        //                     if(!checkDuplicateNum(n, sudoku, i, j)){    //? اگه این عدده تکراری نبود تو سطر و ستون
-        //                         sudoku[i, j] = n;
-        //                         solveSudoku(sudoku);
-        //                         if(flag) {
-        //                             goto afterBreak;
-        //                         }
-        //                     }
-        //                 }
-        //                 flag = false;   //? اگه کل عدد ها امکان قرار دادنش نیست 
-        //             }
-        //         }
-        //         flag = true;
-        //     }
+        private static bool isFullSudoku(int[,] sudoku)
+        {
+            for (int i = 0; i < SIZE; i++)
+            {
+                for (int j = 0; j < SIZE; j++)
+                {
+                    if(sudoku[i, j] == UNASSIGNED) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    
+        private static void fillRandSudoku(ref int[,] sudoku, int difficulty)
+        {
+            int[] rands = new int[difficulty];
+            Random r  = new Random();
+            Random r2 = new Random();
+            for (int i = 0; i < SIZE; i++)
+            {
+                //? Get random cell PLACE in one arr
+                for (int k = 0; k < difficulty; k++)
+                {
+                    rands[k] = r.Next(0, SIZE);
+                }
 
-        //     afterBreak:
-        //         Console.WriteLine("Done");
 
-        //     return sudoku;
-        // }
+                for (int j = 0; j < SIZE; j++)
+                {
+                    if(rands.Contains(j)){
+                        for (int z = 0; z < SIZE; z++)
+                        {
+                            if(!checkDuplicateNum(z, sudoku, i, j)) {
+                                sudoku[i, j] = z;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         private static bool solver(ref int[,] sudoku)
         {
+            printCurrentSudoku(sudoku);
+            Console.WriteLine("----------------------");
             for (int i = 0; i < SIZE; i++)
             {
                 for (int j = 0; j < SIZE; j++)
@@ -135,6 +176,8 @@ namespace App
                                 sudoku[i, j] = n;
                                 if(solver(ref sudoku)){
                                     return true;
+                                }else{
+                                    sudoku[i, j] = UNASSIGNED;
                                 }
                             }
                         }
@@ -145,5 +188,6 @@ namespace App
             return true;
 
         }
+    
     }
 }
