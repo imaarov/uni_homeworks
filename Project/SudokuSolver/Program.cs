@@ -6,42 +6,60 @@ namespace App
 {
     class Project
     {
-        public static int SIZE = 9; //? size of sudoku row & col
-        public static int UNASSIGNED = 0;
-        public static int RANDOMFILLER = 2;
-        public static int USERFILLER = 1;
+        public static int SIZE = 9;                 //? size of sudoku row & col سایز جدول سودوکو
+        public static int UNASSIGNED = 0;           //? نمایشگر خانه خالی سودوکو
+        public static int RANDOMFILLER = 2;         //? عدد ورودی متناسب با پر کردن رندوم
+        public static int USERFILLER = 1;           //? عدد ورودی متناسب با پر کردن توسط کاربر
+        public static double SPEED;                 //? سرعت حل
 
         static void Main()
         {
             int[,] sudoku = new int[SIZE, SIZE];
-           
+
+            //? انتخاب پر کردن سودوکو با کاربر یا پر کردن رندوم توسط برنامه
             int opt = 0;
-            
             Console.WriteLine("Enter the option you want: \n"
             + "1-Fill sudoku yourself\n"
             + "2-Fill sudoku random");
             opt = Convert.ToInt16(Console.ReadLine());
-
             if(opt == USERFILLER){
                 sudoku = sudokuFiller(sudoku);
             }else{
-                int diff = 0;
+                //? گرفتن میزان سختی سودوکو که همان تعداد خانه های پر شده را در یک ردیف مشخص میکند
+                int difficulty = 0;
                 Console.WriteLine("Enter Difficulty:");
-                diff = Convert.ToInt16(Console.ReadLine());
-                fillRandSudoku(ref sudoku, diff);
-                Console.WriteLine("The random sudoku :");
-                printCurrentSudoku(sudoku);
+                difficulty = Convert.ToInt16(Console.ReadLine());
+                fillRandSudoku(ref sudoku, difficulty);
             }
-            // sudoku = solveSudoku(sudoku);
+            
+            //? چاپ سودوکو اولیه
+            Console.WriteLine("The sudoku :");
+            printCurrentSudoku(sudoku);
+
+            //? سرعت حل سودوکو-سرعت کم باشه مراحل پر شدن جدول رو بهتر میبینیم
+            Console.WriteLine("Enter the speed for solving:(1-non stop 2-showing the steps of solving)");
+            int speed = Convert.ToInt16(Console.ReadLine());
+            if(speed == 1) {
+                SPEED = 0;
+            }else {
+                SPEED = 0.03;
+            }
+
+            //? حل جدول
             solver(ref sudoku);
-            solver(ref sudoku);
+
+            //? چاپ جواب نهایی
             Console.WriteLine("Answer : ");
             printCurrentSudoku(sudoku);
+
+            //? چک کردن پر شدن جدول سودوکو
             if(isFullSudoku(sudoku)){
                 System.Console.WriteLine("solved");
             }
         }
 
+        /// <summary>پر کردن جدول سودوکو توسط کاربر</summary>
+        /// <param name="sudoku">آرایه ای که سودوکو در ان قراره پر بشه</param>
         private static int[,] sudokuFiller(int[,] sudoku)
         {
             int userInpInt = UNASSIGNED;
@@ -85,6 +103,8 @@ namespace App
             return sudoku;
         }
 
+        /// <summary>چاپ سودوکو فعلی</summary>
+        /// <param name="sudoku">سودوکوای که باید چاپ بشه</param>
         private static void printCurrentSudoku(int[,] sudoku)
         {
             for (int i = 0; i < SIZE; i++)
@@ -101,6 +121,11 @@ namespace App
             }
         }
 
+        /// <summary>چک کردن قوانین تکرار تو سودوکو</summary>
+        /// <param name="num">عددی که قراره وارد بشه</param>
+        /// <param name="sudoku">جدول سودوکو</param>
+        /// <param name="x">تو چه سطری قراره وارد بشه</param>
+        /// <param name="y">تو چه ستونی قراره وارد بشه</param>
         private static bool checkDuplicateNum(int num, int[,] sudoku, int x, int y)
         {
             bool isExists = false;
@@ -119,6 +144,8 @@ namespace App
             return isExists;
         }
     
+        /// <summary>چک کردن پر بودن سودوکو</summary>
+        /// <param name="sudoku">جدول سودوکو</param>
         private static bool isFullSudoku(int[,] sudoku)
         {
             for (int i = 0; i < SIZE; i++)
@@ -133,6 +160,9 @@ namespace App
             return true;
         }
     
+        /// <summary>پر کردن رندوم جدول سودوکو</summary>
+        /// <param name="sudoku">جدول سودوکو</param>
+        /// <param name="difficulty">تعدادی که باید پر بشه تو هر  خونه</param>
         private static void fillRandSudoku(ref int[,] sudoku, int difficulty)
         {
             int[] rands = new int[difficulty];
@@ -161,10 +191,18 @@ namespace App
             }
         }
 
+        /// <summary>حل سودوکو به صورت بازگشتی</summary>
+        /// <param name="sudoku">پوینتر به سودوکو برای تغییر کردن مقدار پارامتر پاس داده شده</param>
         private static bool solver(ref int[,] sudoku)
         {
+            //? چاپ هر مرحله از حل سودوکو
+            Console.Clear();
             printCurrentSudoku(sudoku);
+            System.Threading.Thread.Sleep(
+    (int)System.TimeSpan.FromSeconds(SPEED).TotalMilliseconds);
             Console.WriteLine("----------------------");
+
+
             for (int i = 0; i < SIZE; i++)
             {
                 for (int j = 0; j < SIZE; j++)
@@ -172,19 +210,25 @@ namespace App
                     if(sudoku[i,j] == UNASSIGNED) {
                         for (int n = 1; n <= SIZE; n++)
                         {
+                            //? اگر عددی بین صفر تا نه هست که قوانین تکرارو نقض نکنه اون رو قرار میدیم
                             if(!checkDuplicateNum(n, sudoku, i, j)) {
                                 sudoku[i, j] = n;
+                                //? اگر به پابان رسیده حل سودوکو از متود بیا بیرون
                                 if(solver(ref sudoku)){
                                     return true;
                                 }else{
+                                    //? در غیر اینصورت یعنی تمامی اعداد بین صفر تا نه مرحله بعدی ممکن نبوده تو اون خانه قرار بگیره پس حانه قبلی رو خالی میکنیم
                                     sudoku[i, j] = UNASSIGNED;
                                 }
                             }
                         }
+                        //? تمامی  اعداد ممکن نمیتوانند قرار بگیرند پس برمیگردیم مرحله قبل تا یه عدد دیگه جایگزین کنیم
                         return false;
                     }
                 }
             }
+
+            //? حلقه اصلی تمام شد پس از متود بیا بیرون
             return true;
 
         }
