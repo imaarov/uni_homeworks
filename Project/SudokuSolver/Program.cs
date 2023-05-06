@@ -27,7 +27,7 @@ namespace App
             }else{
                 //? گرفتن میزان سختی سودوکو که همان تعداد خانه های پر شده را در یک ردیف مشخص میکند
                 int difficulty = 0;
-                Console.WriteLine("Enter Difficulty:");
+                Console.WriteLine("Enter Difficulty: (between 2-4 for quick result)");
                 difficulty = Convert.ToInt16(Console.ReadLine());
                 fillRandSudoku(ref sudoku, difficulty);
             }
