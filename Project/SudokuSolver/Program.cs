@@ -4,18 +4,18 @@ using System.Linq;
 
 namespace App
 {
-    class Project
+    internal class Project
     {
-        public static int SIZE = 9;                 //? size of sudoku row & col سایز جدول سودوکو
-        public static int UNASSIGNED = 0;           //? نمایشگر خانه خالی سودوکو
-        public static int RANDOMFILLER = 2;         //? عدد ورودی متناسب با پر کردن رندوم
-        public static int USERFILLER = 1;           //? عدد ورودی متناسب با پر کردن توسط کاربر
-        public static double SPEED;                 //? سرعت حل
+        public static Int16 SIZE = 9;                 //? size of sudoku row & col سایز جدول سودوکو
+        public static Int16 UNASSIGNED = 0;           //? نمایشگر خانه خالی سودوکو
+        public static Int16 RANDOMFILLER = 2;         //? عدد ورودی متناسب با پر کردن رندوم
+        public static Int16 USERFILLER = 1;           //? عدد ورودی متناسب با پر کردن توسط کاربر
+        public static double SPEED = 0.03;                 //? سرعت حل        
 
-        static void Main()
+        public static void Main()
         {
             int[,] sudoku = new int[SIZE, SIZE];
-
+            SudokuSolver S = new SudokuSolver(UNASSIGNED, SIZE, RANDOMFILLER, USERFILLER, SPEED, sudoku);
             //? انتخاب پر کردن سودوکو با کاربر یا پر کردن رندوم توسط برنامه
             int opt = 0;
             Console.WriteLine("Enter the option you want: \n"
@@ -23,55 +23,88 @@ namespace App
             + "2-Fill sudoku random");
             opt = Convert.ToInt16(Console.ReadLine());
             if(opt == USERFILLER){
-                sudoku = sudokuFiller(sudoku);
+                S.sudokuFiller();
             }else{
                 //? گرفتن میزان سختی سودوکو که همان تعداد خانه های پر شده را در یک ردیف مشخص میکند
                 int difficulty = 0;
                 Console.WriteLine("Enter Difficulty: (between 2-4 for quick result)");
                 difficulty = Convert.ToInt16(Console.ReadLine());
-                fillRandSudoku(ref sudoku, difficulty);
+                S.fillRandSudoku(difficulty);
             }
-            
+
             //? چاپ سودوکو اولیه
             Console.WriteLine("The sudoku :");
-            printCurrentSudoku(sudoku);
+            S.printCurrentSudoku();
 
-            //? سرعت حل سودوکو-سرعت کم باشه مراحل پر شدن جدول رو بهتر میبینیم
-            Console.WriteLine("Enter the speed for solving:(1-non stop 2-showing the steps of solving)");
-            int speed = Convert.ToInt16(Console.ReadLine());
-            if(speed == 1) {
-                SPEED = 0;
-            }else {
-                SPEED = 0.03;
-            }
-
-            //? حل جدول
-            solver(ref sudoku);
-
-            //? چاپ جواب نهایی
-            Console.WriteLine("Answer : ");
-            printCurrentSudoku(sudoku);
-
-            //? چک کردن پر شدن جدول سودوکو
-            if(isFullSudoku(sudoku)){
-                System.Console.WriteLine("solved");
-            }
+            S.solver();
         }
+    }
+    internal class SudokuSolver
+    {
+        private Int16 unassigned;
+        private Int16 size;
+        private Int16 randomfiller;
+        private Int16 userfiller;
+        private double speed;
+        private int[,] sudoku;
+
+        public Int16 Unassigned
+        {
+            get{return unassigned;}
+            set{unassigned = value;}
+        }
+        public Int16 Size
+        {
+            get { return size; }
+            set { size = value; }
+        }
+        public Int16 Randomfiller
+        {
+            get { return randomfiller; }
+            set { randomfiller = value; }
+        }
+        public Int16 Userfiller
+        {
+            get { return userfiller; }
+            set { userfiller = value; }
+        }
+        public double Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+        public int[,] Sudoku
+        {
+            get { return sudoku; }
+            set { sudoku = value; }
+        }
+
+        public SudokuSolver(Int16 unassigned, Int16 size, Int16 randomfiller, Int16 userfiller, double speed, int[,] sudoku) 
+        {
+            Unassigned = unassigned;
+            Size = size;
+            Randomfiller = randomfiller;
+            Userfiller = userfiller;
+            Speed = speed;
+            Sudoku = sudoku;
+        }
+        public SudokuSolver() {}
+
 
         /// <summary>پر کردن جدول سودوکو توسط کاربر</summary>
         /// <param name="sudoku">آرایه ای که سودوکو در ان قراره پر بشه</param>
-        private static int[,] sudokuFiller(int[,] sudoku)
+        public int[,] sudokuFiller()
         {
-            int userInpInt = UNASSIGNED;
+            int userInpInt = unassigned;
             string? userInpStr;
             bool isExists = false;
 
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0; j < SIZE; j++)
+                for (int j = 0; j < size; j++)
                 {
                     Console.WriteLine("The current sudoku:");
-                    printCurrentSudoku(sudoku);
+                    printCurrentSudoku();
                     do
                     {
                         Console.WriteLine("Enter el [" + i + "][" + j + "]:");
@@ -80,23 +113,23 @@ namespace App
                             userInpStr == "" ||
                             userInpStr == " " ||
                             userInpStr == null){
-                                userInpInt = UNASSIGNED;     //? 0 یعنی اون خونه تو سودوکو خالیه
+                                userInpInt = unassigned;     //? 0 یعنی اون خونه تو سودوکو خالیه
                             }else{
                                 userInpInt = Convert.ToInt16(userInpStr);
                             }
                             if(userInpInt > 9 || userInpInt < 0) {
                                 Console.WriteLine("ERR:enter number between 0-9(space or enter for skipping) !!!");
                             }
-                            isExists = checkDuplicateNum(userInpInt, sudoku, i, j);
-                            
-                            if (isExists && userInpInt != UNASSIGNED)
+                            isExists = checkDuplicateNum(userInpInt, i, j);
+
+                            if (isExists && userInpInt != unassigned)
                             {
                                 Console.WriteLine("dont repeat two num in row or col تو سطر یا ستون یه عدد یکسان هست");
                             }else{
                                 isExists = false;
                             }
                     } while (( userInpInt > 9 || userInpInt < 0 ) || isExists);
-                    
+
                     sudoku[i, j] = userInpInt;
                 }
             }
@@ -105,17 +138,17 @@ namespace App
 
         /// <summary>چاپ سودوکو فعلی</summary>
         /// <param name="sudoku">سودوکوای که باید چاپ بشه</param>
-        private static void printCurrentSudoku(int[,] sudoku)
+        public void printCurrentSudoku()
         {
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0; j < SIZE; j++)
+                for (int j = 0; j < size; j++)
                 {
                     Console.Write(sudoku[i,j]);
-                    if(j != 0 || j != SIZE) {
+                    if(j != 0 || j != size) {
                         Console.Write("|");
                     }
-                    
+
                 }
                 Console.Write("\n------------------\n");
             }
@@ -126,10 +159,10 @@ namespace App
         /// <param name="sudoku">جدول سودوکو</param>
         /// <param name="x">تو چه سطری قراره وارد بشه</param>
         /// <param name="y">تو چه ستونی قراره وارد بشه</param>
-        private static bool checkDuplicateNum(int num, int[,] sudoku, int x, int y)
+        private bool checkDuplicateNum(int num, int x, int y)
         {
             bool isExists = false;
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < size; i++)
             {
                 // Console.WriteLine(sudoku[i, y]);
                 if(sudoku[i,y] == num){     //? checking for num exists in row (چک کردن در ستون)
@@ -143,46 +176,46 @@ namespace App
 
             return isExists;
         }
-    
+
         /// <summary>چک کردن پر بودن سودوکو</summary>
         /// <param name="sudoku">جدول سودوکو</param>
-        private static bool isFullSudoku(int[,] sudoku)
+        private bool isFullSudoku()
         {
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0; j < SIZE; j++)
+                for (int j = 0; j < size; j++)
                 {
-                    if(sudoku[i, j] == UNASSIGNED) {
+                    if(sudoku[i, j] == unassigned) {
                         return false;
                     }
                 }
             }
             return true;
         }
-    
+
         /// <summary>پر کردن رندوم جدول سودوکو</summary>
         /// <param name="sudoku">جدول سودوکو</param>
         /// <param name="difficulty">تعدادی که باید پر بشه تو هر  خونه</param>
-        private static void fillRandSudoku(ref int[,] sudoku, int difficulty)
+        public void fillRandSudoku(int difficulty)
         {
             int[] rands = new int[difficulty];
             Random r  = new Random();
             Random r2 = new Random();
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < size; i++)
             {
                 //? Get random cell PLACE in one arr
                 for (int k = 0; k < difficulty; k++)
                 {
-                    rands[k] = r.Next(0, SIZE);
+                    rands[k] = r.Next(0, size);
                 }
 
 
-                for (int j = 0; j < SIZE; j++)
+                for (int j = 0; j < size; j++)
                 {
                     if(rands.Contains(j)){
-                        for (int z = 0; z < SIZE; z++)
+                        for (int z = 0; z < size; z++)
                         {
-                            if(!checkDuplicateNum(z, sudoku, i, j)) {
+                            if(!checkDuplicateNum(z, i, j)) {
                                 sudoku[i, j] = z;
                             }
                         }
@@ -193,32 +226,32 @@ namespace App
 
         /// <summary>حل سودوکو به صورت بازگشتی</summary>
         /// <param name="sudoku">پوینتر به سودوکو برای تغییر کردن مقدار پارامتر پاس داده شده</param>
-        private static bool solver(ref int[,] sudoku)
+        public bool solver()
         {
             //? چاپ هر مرحله از حل سودوکو
             Console.Clear();
-            printCurrentSudoku(sudoku);
+            printCurrentSudoku();
             System.Threading.Thread.Sleep(
-    (int)System.TimeSpan.FromSeconds(SPEED).TotalMilliseconds);
+    (int)System.TimeSpan.FromSeconds(speed).TotalMilliseconds);
             Console.WriteLine("----------------------");
 
 
-            for (int i = 0; i < SIZE; i++)
+            for (int i = 0; i < size; i++)
             {
-                for (int j = 0; j < SIZE; j++)
+                for (int j = 0; j < size; j++)
                 {
-                    if(sudoku[i,j] == UNASSIGNED) {
-                        for (int n = 1; n <= SIZE; n++)
+                    if(sudoku[i,j] == unassigned) {
+                        for (int n = 1; n <= size; n++)
                         {
                             //? اگر عددی بین صفر تا نه هست که قوانین تکرارو نقض نکنه اون رو قرار میدیم
-                            if(!checkDuplicateNum(n, sudoku, i, j)) {
+                            if(!checkDuplicateNum(n, i, j)) {
                                 sudoku[i, j] = n;
                                 //? اگر به پابان رسیده حل سودوکو از متود بیا بیرون
-                                if(solver(ref sudoku)){
+                                if(solver()){
                                     return true;
                                 }else{
                                     //? در غیر اینصورت یعنی تمامی اعداد بین صفر تا نه مرحله بعدی ممکن نبوده تو اون خانه قرار بگیره پس حانه قبلی رو خالی میکنیم
-                                    sudoku[i, j] = UNASSIGNED;
+                                    sudoku[i, j] = unassigned;
                                 }
                             }
                         }
@@ -232,6 +265,6 @@ namespace App
             return true;
 
         }
-    
+
     }
 }
