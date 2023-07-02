@@ -165,12 +165,28 @@ namespace App
             for (int i = 0; i < size; i++)
             {
                 // Console.WriteLine(sudoku[i, y]);
-                if(sudoku[i,y] == num){     //? checking for num exists in row (چک کردن در ستون)
+                if (sudoku[i, y] == num)
+                {     //? checking for num exists in row (چک کردن در ستون)
                     isExists = true;
                 }
                 // Console.WriteLine(sudoku[x, i]);
-                if(sudoku[x,i] == num){     //? checking for num exists in col‌ (چک کردن در سطر)
+                if (sudoku[x, i] == num)
+                {     //? checking for num exists in col‌ (چک کردن در سطر)
                     isExists = true;
+                }
+            }
+
+            //? چک کردن ۳در۳
+            int startRow = x - x % 3;
+            int startCol = y - y % 3;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (sudoku[i + startRow, j + startCol] == num)
+                    {
+                        isExists = true;
+                    }
                 }
             }
 

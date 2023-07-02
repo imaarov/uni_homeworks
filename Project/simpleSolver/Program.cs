@@ -141,6 +141,17 @@ namespace App
                     isExists = true;
                 }
             }
+            
+            //? چک کردن ۳در۳
+            int startRow = x - x % 3; 
+            int startCol = y - y % 3;
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    if (sudoku[i + startRow,j + startCol] == num) {
+                        isExists = true;
+                    }
+                }
+            }
 
             return isExists;
         }
