@@ -37,6 +37,7 @@ namespace App
             S.printCurrentSudoku();
 
             S.solver();
+            S.printCurrentSudoku();
         }
     }
     internal class SudokuSolver

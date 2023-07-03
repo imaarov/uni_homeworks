@@ -8,17 +8,15 @@ namespace App
     {
         public static Int16 SIZE = 9;                 //? size of sudoku row & col سایز جدول سودوکو
         public static Int16 UNASSIGNED = 0;           //? نمایشگر خانه خالی سودوکو
+        public static Int16 DIFFICULTY = 3;           //? تعداد خونه هایی که تو هر سطر باید پر شده باشه
 
         public static void Main()
         {
             int[,] sudoku = new int[SIZE, SIZE];
             SudokuSolver S = new SudokuSolver(UNASSIGNED, SIZE, sudoku);
 
-            Console.WriteLine("fill the sudoku");            
-            S.sudokuFiller();
-            
-            Console.WriteLine("The sudoku :");
-            //? چاپ سودوکو اولیه
+            Console.WriteLine("sudoku avalie");            
+            S.fillRandSudoku(DIFFICULTY);
             S.printCurrentSudoku();
 
             S.solver();
@@ -108,8 +106,9 @@ namespace App
             return sudoku;
         }
 
-        public void printCurrentSudoku()
+        public void printCurrentSudoku(int[,] sudokuInp = null)
         {
+            sudoku = sudokuInp != null ? sudokuInp : this.sudoku;
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
@@ -156,6 +155,33 @@ namespace App
             return isExists;
         }
 
+        public void fillRandSudoku(int difficulty)
+        {
+            int[] rands = new int[difficulty];
+            Random r  = new Random();
+            Random r2 = new Random();
+            for (int i = 0; i < size; i++)
+            {
+                //? Get random cell PLACE in one arr
+                for (int k = 0; k < difficulty; k++)
+                {
+                    rands[k] = r.Next(0, size);
+                }
+
+
+                for (int j = 0; j < size; j++)
+                {
+                    if(rands.Contains(j)){
+                        for (int z = 0; z < size; z++)
+                        {
+                            if(!checkDuplicateNum(z, i, j)) {
+                                sudoku[i, j] = z;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         public bool solver()
         {
             for (int i = 0; i < size; i++)
