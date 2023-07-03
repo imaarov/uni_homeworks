@@ -1,11 +1,4 @@
-Sudoku Solver:
-
-## سودوکو اولیه
-![primitive sudoku](img/primitive_sudoku.png)
-
-## سودوکو نهایی
-![final sudoku](img/final_sudoku.png)
-
+# Sudoku Solver:
 ## ویدیو حل سودوکو
 ![primitive sudoku](vid/terminal_res.gif)
 
